@@ -112,14 +112,16 @@ bool App::init()
 
 	// Camera position
 	cameraPosition_ = new Position;
-	cameraPosition_->setPosition(100.0f, 25.0f, -20.0f);
+	cameraPosition_->setPosition(0.0f, 5.0f,  0.0f);
+	cameraPosition_->setRotation(0.0f, 45.0f, 0.0f);
 
 	// Tiger position
 	tigerPosition_ = new Position;
-	tigerPosition_->setPosition(100.0f, 10.0f, 20.0f);
+	tigerPosition_->setPosition(10.0f, 1.0f, 10.0f);
+	tigerPosition_->setRotation(0.0f, 45.0f, 0.0f);
 	
 	// Set tiger facing towards z direction
-	tigerPosition_->setRotation(0.0f, 180.0f, 0.0f);
+	tigerPosition_->setRotation(0.0f, 180.0f + 45.0f, 0.0f);
 
 	return true;
 }
@@ -258,21 +260,18 @@ bool App::frame()
 
 	// Camera position
 	cameraPosition_->setFrameTime(timer_->getTime());	
-	cameraPosition_->turnLeft(input_->isLeftArrowPressed());	
-	cameraPosition_->turnRight(input_->isRightArrowPressed());	
-	cameraPosition_->moveForward(input_->isUpArrowPressed());	
-	cameraPosition_->moveBack(input_->isDownArrowPressed());
-
+	cameraPosition_->strafeLeft(input_->isAPressed());	
+	cameraPosition_->strafeRight(input_->isDPressed());	
+	cameraPosition_->moveForward(input_->isWPressed());	
+	cameraPosition_->moveBack(input_->isSPressed());
+		
 	// Tiger position
 	tigerPosition_->setFrameTime(timer_->getTime());
-	tigerPosition_->turnLeft(input_->isAPressed());	
-	tigerPosition_->turnRight(input_->isDPressed());	
-	tigerPosition_->moveForward(input_->isSPressed());	
-	tigerPosition_->moveBack(input_->isWPressed());
-		
-	float cameraRotation;
-	cameraPosition_->getYRotation(cameraRotation);
-		
+	tigerPosition_->turnLeft(input_->isLeftArrowPressed());	
+	tigerPosition_->turnRight(input_->isRightArrowPressed());	
+	tigerPosition_->moveForward(input_->isDownArrowPressed());	
+	tigerPosition_->moveBack(input_->isUpArrowPressed());
+				
 	float cameraX, cameraY, cameraZ;
 	cameraPosition_->getPosition(cameraX, cameraY, cameraZ);
 
@@ -286,6 +285,23 @@ bool App::frame()
 	// Mouse
 	int mouseX, mouseY;
 	input_->getMousePosition(mouseX, mouseY);
+
+	static D3DXVECTOR3 camRotation;
+	cameraPosition_->getRotation(camRotation.x, camRotation.y, camRotation.z);
+	
+	int deltaX, deltaY;
+	input_->getMouseDelta(deltaX, deltaY);
+	camRotation.y += deltaX * MOUSE_SENSITIVITY;
+	camRotation.x += deltaY * MOUSE_SENSITIVITY;
+	
+	// Limit mouse rotation
+	camRotation.y = (float) __max(-180, camRotation.y);
+	camRotation.y = (float) __min(180, camRotation.y);
+	camRotation.x = (float) __max(-75, camRotation.x);
+	camRotation.x = (float) __min(75, camRotation.x);
+
+	cameraPosition_->setRotation(camRotation.x, camRotation.y, camRotation.z);
+
 
 	// Spawn the ball, but only once in a second
 	bool spawnBall = false;	
@@ -301,7 +317,7 @@ bool App::frame()
 	}
 
 	// Pass parameters to scene manager
-	result = scene_->frame(mouseX, mouseY, timer_->getTime(), fpsCounter_->getFps(), cpuMonitor_->getCpuUsage(), cameraRotation, cameraX, cameraY, cameraZ, tigerRotation, tigerX, tigerY, tigerZ, spawnBall);
+	result = scene_->frame(mouseX, mouseY, timer_->getTime(), fpsCounter_->getFps(), cpuMonitor_->getCpuUsage(), camRotation, cameraX, cameraY, cameraZ, tigerRotation, tigerX, tigerY, tigerZ, spawnBall);
 	if (!result)
 	{
 		return false;
