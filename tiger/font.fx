@@ -1,4 +1,4 @@
-// Font.fx is the shader for rendering 2D text on top of our 3D scenes. This shader is just a modified version of texture.fx that was used to render 2D images.
+// Font.fx is the shader for rendering 2D text on top of our 3D scenes.
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: font.fx

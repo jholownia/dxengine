@@ -17,13 +17,15 @@
 #include "camera.h"
 #include "object3d.h"
 #include "shadermanager.h"
-#include "lighting.h"
+#include "light.h"
 #include "text.h"
 #include "objectlist.h"
 #include "frustum.h"
 #include "terrain.h"
 #include "quadtree.h"
 #include "config.h"
+#include "rendertexture.h"
+#include "debugwindow.h"
 
 
 /*
@@ -45,7 +47,8 @@ public:
 
 	bool init(int, int, HWND);
 	void shutdown();
-	bool frame(int, int, float, int, int, float, float, float, float, float, float, float, float, bool);
+	bool frame(int, int, float, int, int, D3DXVECTOR3, float, float, float, float, float, float, float, bool);
+	bool render();
 
 private:
 	D3DManager* d3d_;
@@ -55,17 +58,28 @@ private:
 	Object3D* wingl_;
 	Object3D* skyBox_;
 	Object3D* ball_;
+	Object3D* floor_;
+	Object3D* water_;
 	Terrain* terrain_;
 	ShaderManager* shaderManager_;
-	Lighting* light_;
-	Lighting* skyboxLight_;
-	Lighting* terrainLight_;
+	Light* light_;
+	Light* skyboxLight_;
+	Light* terrainLight_;
 	Text* text_;
 	ObjectList* ballsList_;
 	Frustum* frustum_;
 	Quadtree* quadtree_;
-
-
-	bool render();
+	RenderTexture* renderTexture_;
+	RenderTexture* refractionTexture_;
+	RenderTexture* reflectionTexture_;
+	DebugWindow* debugWindow_;
+	
+	float waterHeight_;
+	float waterTranslation;
+	
+	void renderToTexture();
+	void renderRefractionToTexture();
+	void renderReflectionToTexture();
+	void renderScene();
 };
 

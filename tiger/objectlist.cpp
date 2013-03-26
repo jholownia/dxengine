@@ -98,11 +98,11 @@ void ObjectList::addObject( float x, float y, float z, float angle)
 	objects_.push_back(position);
 	
 	// Set velocity vector to point in the same direction that tiger does
-	angle += D3DX_PI;		
+	angle += (float)D3DX_PI;		
 	float velX = sinf(angle);
 	float velZ = cosf(angle);	
-	Vector3D velocity(velX, 0.0, velZ);	
-	velocity = velocity * 0.05;
+	Vector3D velocity(velX, 0.0f, velZ);	
+	velocity = velocity * 0.05f;
 	
 	PhysicsState state;
 	state.init(velocity);
@@ -119,7 +119,7 @@ void ObjectList::addObject( float x, float y, float z, float angle)
 */
 void ObjectList::frame( float frameTime, Quadtree* terrain )
 {
-	for (int i = 0; i < objects_.size(); ++i)
+	for (unsigned int i = 0; i < objects_.size(); ++i)
 	{
 		states_[i].update(frameTime, terrain, objects_[i]);
 	}

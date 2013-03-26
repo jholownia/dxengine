@@ -50,9 +50,13 @@ public:
 	void getOrthoMatrix(D3DXMATRIX&);
 
 	void getGpuInfo(char*, int&); // FIXME: change to string
+	ID3D10DepthStencilView* getDepthStencilView();
 
 	void turnZBufferOn();
 	void turnZBufferOff();
+
+	void setBackBufferRenderTarget();
+	void resetViewport();
 
 private:
 	bool vsyncEnabled_;
@@ -69,5 +73,6 @@ private:
 	D3DXMATRIX worldMatrix_;
 	D3DXMATRIX orthoMatrix_;
 	ID3D10DepthStencilState* depthDisableStencilState_;
+	D3D10_VIEWPORT viewport_;
 };
 

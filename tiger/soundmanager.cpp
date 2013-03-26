@@ -56,7 +56,7 @@ bool SoundManager::init( HWND hwnd )
 	}
 
 	// Play the wave file
-	result = playWaveFile();
+	// result = playWaveFile();
 	
 	return result;
 }
@@ -352,7 +352,7 @@ bool SoundManager::playWaveFile()
 	{
 		return false;
 	}
-
+		
 	result = secondaryBuffer_->Play(0, 0, 0);   // use DSBPLAY_LOOPING for loop
 	if (FAILED(result))
 	{

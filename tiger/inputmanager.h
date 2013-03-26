@@ -55,6 +55,7 @@ public:
 	bool isSpacePressed();
 
 	void getMousePosition(int&, int&);
+	void getMouseDelta(int&, int&);	
 	
 	bool isKeyDown(unsigned int);
 
@@ -67,7 +68,9 @@ private:
 	int screenWidth_;
 	int screenHeight_;
 	int mouseX_;
+	int mouseLastX_;
 	int mouseY_;
+	int mouseLastY_;
 
 	bool readKeyboard();
 	bool readMouse();

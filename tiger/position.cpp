@@ -187,7 +187,7 @@ void Position::moveForward( bool keydown )
 	}
 	else
 	{
-		forwardSpeed_ -= frameTime_ * 0.0007;
+		forwardSpeed_ -= frameTime_ * 0.0007f;
 
 		if (forwardSpeed_ < 0.0f)
 		{
@@ -196,8 +196,10 @@ void Position::moveForward( bool keydown )
 	}
 
 	float radians = rotationY_ * 0.0174532925f;
+	float radiansz = rotationX_ * 0.0174532925f;
 
 	posX_ += sinf(radians) * forwardSpeed_;
+	posY_ += -sinf(radiansz) * forwardSpeed_;
 	posZ_ += cosf(radians) * forwardSpeed_;
 }
 
@@ -219,7 +221,7 @@ void Position::moveBack( bool keydown )
 	}
 	else
 	{
-		backwardSpeed_ -= frameTime_ * 0.0007;
+		backwardSpeed_ -= frameTime_ * 0.0007f;
 
 		if (backwardSpeed_ < 0.0f)
 		{
@@ -228,8 +230,10 @@ void Position::moveBack( bool keydown )
 	}
 
 	float radians = rotationY_ * 0.0174532925f;
+	float radiansz = rotationX_ * 0.0174532925f;
 
 	posX_ -= sinf(radians) * backwardSpeed_;
+	posY_ -= -sinf(radiansz) * backwardSpeed_;
 	posZ_ -= cosf(radians) * backwardSpeed_;
 }
 
@@ -251,7 +255,7 @@ void Position::strafeLeft( bool keydown )
 	}
 	else
 	{
-		strafeLeftSpeed_ -= frameTime_ * 0.0007;
+		strafeLeftSpeed_ -= frameTime_ * 0.0007f;
 
 		if (strafeLeftSpeed_ < 0.0f)
 		{

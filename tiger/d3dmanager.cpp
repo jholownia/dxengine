@@ -65,8 +65,7 @@ bool D3DManager::init( int screenWidth, int screenHeight, const bool vsync, HWND
 	ID3D10Texture2D* backBufferPtr;
 	D3D10_TEXTURE2D_DESC depthBufferDesc;
 	D3D10_DEPTH_STENCIL_DESC depthStencilDesc;
-	D3D10_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-	D3D10_VIEWPORT viewport;
+	D3D10_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;	
 	float fov;
 	float aspectRatio;
 	D3D10_RASTERIZER_DESC rasterizerDesc;
@@ -182,9 +181,10 @@ bool D3DManager::init( int screenWidth, int screenHeight, const bool vsync, HWND
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.OutputWindow = hwnd;
 
-	// no multisampling
+	// no multisampling - 1, 0
 	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.SampleDesc.Quality = 0;
+	
 
 	if (fullscreen)
 	{
@@ -202,6 +202,7 @@ bool D3DManager::init( int screenWidth, int screenHeight, const bool vsync, HWND
 
 	// Finally create the device
 	result = D3D10CreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, 0, D3D10_SDK_VERSION, &swapChainDesc, &swapChain_, &device_);
+	
 
 	// Back buffer
 	result = swapChain_->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*) &backBufferPtr);
@@ -229,8 +230,8 @@ bool D3DManager::init( int screenWidth, int screenHeight, const bool vsync, HWND
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
 	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthBufferDesc.SampleDesc.Count = 1;
-	depthBufferDesc.SampleDesc.Quality = 0;
+	depthBufferDesc.SampleDesc.Count = 1;  // 1
+	depthBufferDesc.SampleDesc.Quality = 0;  // 0
 	depthBufferDesc.Usage = D3D10_USAGE_DEFAULT;
 	depthBufferDesc.BindFlags = D3D10_BIND_DEPTH_STENCIL;
 	depthBufferDesc.CPUAccessFlags = 0;
@@ -296,7 +297,7 @@ bool D3DManager::init( int screenWidth, int screenHeight, const bool vsync, HWND
 	rasterizerDesc.DepthClipEnable = true;
 	rasterizerDesc.FillMode = D3D10_FILL_SOLID;
 	rasterizerDesc.FrontCounterClockwise = false;
-	rasterizerDesc.MultisampleEnable = false;
+	rasterizerDesc.MultisampleEnable = false;  // false
 	rasterizerDesc.ScissorEnable = false;
 	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
 
@@ -309,15 +310,15 @@ bool D3DManager::init( int screenWidth, int screenHeight, const bool vsync, HWND
 	device_->RSSetState(rasterizerState_);
 
 	// Setup the viewport
-	viewport.Width = screenWidth;
-	viewport.Height = screenHeight;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
+	viewport_.Width = screenWidth;
+	viewport_.Height = screenHeight;
+	viewport_.MinDepth = 0.0f;
+	viewport_.MaxDepth = 1.0f;
+	viewport_.TopLeftX = 0;
+	viewport_.TopLeftY = 0;
 
 	// Create the viewport.
-	device_->RSSetViewports(1, &viewport);
+	device_->RSSetViewports(1, &viewport_);
 
 	// Setup projection matrix
 	fov = (float) D3DX_PI / 4.0f;
@@ -536,4 +537,29 @@ void D3DManager::turnZBufferOn()
 void D3DManager::turnZBufferOff()
 {
 	device_->OMSetDepthStencilState(depthDisableStencilState_, 1);
+}
+
+/*
+================
+ D3DManager::getDepthStencilView
+================
+*/
+ID3D10DepthStencilView* D3DManager::getDepthStencilView()
+{
+	return depthStencilView_;
+}
+
+/*
+================
+ D3DManager::setBackBufferRenderTarget
+================
+*/
+void D3DManager::setBackBufferRenderTarget()
+{
+	device_->OMSetRenderTargets(1, &renderTargetView_, depthStencilView_);
+}
+
+void D3DManager::resetViewport()
+{
+	device_->RSSetViewports(1, &viewport_);
 }

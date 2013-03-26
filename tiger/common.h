@@ -1,9 +1,7 @@
 /*
 ================================
- app.cpp
-
- Main application object.
-
+ common.h
+ 
  Created on: 09 Dec 2012
  Author: Jan Holownia
 

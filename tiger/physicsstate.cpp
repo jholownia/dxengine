@@ -62,10 +62,10 @@ void PhysicsState::update( float deltaTime, Quadtree* terrain, Vector3D& positio
 	float height;
 	if (terrain->getHeightAtPosition(position.x, position.z, height))
 	{
-		if (position.y < (height + 1.0))
+		if (position.y < (height + 1.0f))
 		{
-			velocity_.y = -velocity_.y * 0.9;
-			position.y = height + 1.0;
+			velocity_.y = -velocity_.y * 0.9f;
+			position.y = height + 1.0f;
 		}
 	}
 }

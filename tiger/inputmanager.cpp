@@ -46,6 +46,8 @@ bool InputManager::init( HINSTANCE hinstance, HWND hwnd, int screenWidth, int sc
 	screenHeight_ = screenHeight;
 	mouseX_ = 0;
 	mouseY_ = 0;
+	mouseLastX_ = 0;
+	mouseLastY_ = 0;
 
 	// Initialize direct input
 	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void **) &directInput_, NULL);
@@ -137,6 +139,9 @@ void InputManager::shutdown()
 bool InputManager::frame()
 {
 	bool result;
+
+	mouseLastX_ = mouseX_;
+	mouseLastY_ = mouseY_;
 
 	result = readKeyboard();
 	if (!result)
@@ -241,7 +246,8 @@ void InputManager::processInput()
 {
 	mouseX_ += mouseState_.lX;
 	mouseY_ += mouseState_.lY;
-
+	
+	/*
 	if (mouseX_ < 0)
 	{
 		mouseX_ = 0;
@@ -258,6 +264,7 @@ void InputManager::processInput()
 	{
 		mouseY_ = screenHeight_;
 	}
+	*/
 }
 
 /*
@@ -358,4 +365,10 @@ bool InputManager::isSpacePressed()
 bool InputManager::isKeyDown( unsigned int key )
 {
 	return (keyboardState_[key] & 0x80);
+}
+
+void InputManager::getMouseDelta( int& dx, int& dy)
+{
+	dx = mouseX_ - mouseLastX_;
+	dy = mouseY_ - mouseLastY_;
 }

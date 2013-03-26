@@ -1,73 +1,83 @@
 /*
 ================================
- terrainshader.cpp
+ refractionshader.cpp
  
- Created on: 10 Jan 2012
+ Created on: 21 Mar 2013
  Author: Jan Holownia
 
- Copyright (c) Jan Holownia <jan.holownia@gmail.com> 2013.
+ Copyright (c) Jan Holownia <jan.holownia@gmail.com> 2012.
 ================================
 */
 
-#include "terrainshader.h"
+#include "refractionshader.h"
 
 /*
 ================
- TerrainShader::TerrainShader
+ RefractionShader::RefractionShader
 ================
 */
-TerrainShader::TerrainShader(void) :
+RefractionShader::RefractionShader(void) :
 	effect_              (NULL),
 	technique_           (NULL),
 	layout_              (NULL),
-	samplerState_        (NULL),
 	worldMatrixPtr_      (NULL),
 	viewMatrixPtr_       (NULL),
 	projectionMatrixPtr_ (NULL),
-	ambientColorPtr_     (NULL),
-	diffuseColorPtr_     (NULL),
+	texturePrt_          (NULL),
 	lightDirectionPtr_   (NULL),
-	texturePtr_          (NULL)
+	ambientColorPtr_     (NULL),
+	diffuseColorPtr_     (NULL),	
+	clipPlanePtr_        (NULL)
 {
 
 }
 
 /*
 ================
- TerrainShader::~TerrainShader
+ RefractionShader::~RefractionShader
 ================
 */
-TerrainShader::~TerrainShader(void)
+RefractionShader::~RefractionShader(void)
 {
-
 }
 
 /*
 ================
- TerrainShader::init
+ RefractionShader::init
 ================
 */
-bool TerrainShader::init( ID3D10Device* device, HWND hwnd )
+bool RefractionShader::init( ID3D10Device* device, HWND hwnd )
 {
-	return initShader(device, hwnd, L"terrain.fx");
+	return initShader(device, hwnd, L"refraction.fx");
 }
 
 /*
 ================
- TerrainShader::shutdown
+ RefractionShader::shutdown
 ================
 */
-void TerrainShader::shutdown()
+void RefractionShader::shutdown()
 {
 	shutdownShader();
 }
 
 /*
 ================
- TerrainShader::initShader
+ RefractionShader::render
 ================
 */
-bool TerrainShader::initShader( ID3D10Device* device, HWND hwnd, WCHAR* filename)
+void RefractionShader::render( ID3D10Device* device, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D10ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor, D3DXVECTOR4 clipPlane )
+{
+	setShaderParameters(worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, ambientColor, diffuseColor, clipPlane);
+	renderShader(device, indexCount);
+}
+
+/*
+================
+ RefractionShader::initShader
+================
+*/
+bool RefractionShader::initShader( ID3D10Device* device, HWND hwnd, WCHAR* filename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -75,16 +85,13 @@ bool TerrainShader::initShader( ID3D10Device* device, HWND hwnd, WCHAR* filename
 	unsigned int numElements;
 	D3D10_PASS_DESC passDesc;
 
-	D3D10_SAMPLER_DESC samplerDesc;	
-	ID3D10Blob* vertexShaderBuffer = NULL;
-	ID3D10Blob* pixelShaderBuffer = NULL;
 
 	// Initialize the error message.
 	errorMessage = 0;
-	
+
 	// Load the shader in from the file.
 	result = D3DX10CreateEffectFromFile(filename, NULL, NULL, "fx_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, device, NULL, NULL, &effect_, &errorMessage, NULL);
-
+	
 	if(FAILED(result))
 	{
 		// If the shader failed to compile it should have written something to the error message.
@@ -101,8 +108,7 @@ bool TerrainShader::initShader( ID3D10Device* device, HWND hwnd, WCHAR* filename
 		return false;
 	}
 
-	technique_ = effect_->GetTechniqueByName("TerrainTechnique");
-	
+	technique_ = effect_->GetTechniqueByName("RefractionTechnique");
 
 	// Now setup the layout of the data that goes into the shader.
 	// This setup needs to match the VertexType structure in the Object3D class and in the shader.
@@ -143,61 +149,32 @@ bool TerrainShader::initShader( ID3D10Device* device, HWND hwnd, WCHAR* filename
 		return false;
 	}
 
-	// -----------------------------------
-
-	// Create a texture sampler state description.
-	samplerDesc.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D10_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D10_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D10_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D10_FLOAT32_MAX;
-
-	// Create the texture sampler state.
-	result = device->CreateSamplerState(&samplerDesc, &samplerState_);
-	if(FAILED(result))
-	{
-		return false;
-	}
-	
 	// Get pointers to the three matrices inside the shader so we can update them from this class.
 	worldMatrixPtr_ = effect_->GetVariableByName("worldMatrix")->AsMatrix();
 	viewMatrixPtr_ = effect_->GetVariableByName("viewMatrix")->AsMatrix();
 	projectionMatrixPtr_ = effect_->GetVariableByName("projectionMatrix")->AsMatrix();
 
 	// Pointer to the texture resource inside the shader
-	texturePtr_ = effect_->GetVariableByName("shaderTexture")->AsShaderResource();
+	texturePrt_ = effect_->GetVariableByName("shaderTexture")->AsShaderResource();
 
-	// Light direction, ambient and diffuse color	
+	// Light direction, ambient and diffuse color
+	lightDirectionPtr_ = effect_->GetVariableByName("lightDirection")->AsVector();
 	ambientColorPtr_ = effect_->GetVariableByName("ambientColor")->AsVector();
 	diffuseColorPtr_ = effect_->GetVariableByName("diffuseColor")->AsVector();
-	lightDirectionPtr_ = effect_->GetVariableByName("lightDirection")->AsVector();
 
-	return true;	
+	// Clip plane
+	clipPlanePtr_ = effect_->GetVariableByName("clipPlane")->AsVector();
+
+	return true;
 }
 
 /*
 ================
- TerrainShader::shutdownShader
+ RefractionShader::shutdownShader
 ================
 */
-void TerrainShader::shutdownShader()
-{
-	// FIXME: zero pointers
-
-	if (samplerState_)
-	{
-		samplerState_->Release();
-		samplerState_ = NULL;
-	}	
-	
+void RefractionShader::shutdownShader()
+{	
 	if (layout_)
 	{
 		layout_->Release();
@@ -209,16 +186,24 @@ void TerrainShader::shutdownShader()
 		effect_->Release();
 		effect_ = NULL;
 	}
-		
-	technique_ = NULL;	
+
+	clipPlanePtr_ = NULL;
+	lightDirectionPtr_ = NULL;
+	diffuseColorPtr_ = NULL;
+	ambientColorPtr_ = NULL;
+	texturePrt_ = NULL;	
+	technique_ = NULL;
+	worldMatrixPtr_ = NULL;
+	viewMatrixPtr_ = NULL;
+	projectionMatrixPtr_ = NULL;
 }
 
 /*
 ================
- TerrainShader::outputShaderErrorMessage
+ RefractionShader::outputShaderErrorMessage
 ================
 */
-void TerrainShader::outputShaderErrorMessage( ID3D10Blob* errorMessage, HWND hwnd, WCHAR* filename )
+void RefractionShader::outputShaderErrorMessage( ID3D10Blob* errorMessage, HWND hwnd, WCHAR* filename )
 {
 	char* compileErrors;
 	unsigned long bufferSize;
@@ -244,10 +229,10 @@ void TerrainShader::outputShaderErrorMessage( ID3D10Blob* errorMessage, HWND hwn
 
 /*
 ================
- TerrainShader::setShaderParameters
+ RefractionShader::setShaderParameters
 ================
 */
-void TerrainShader::setShaderParameters( D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, ID3D10ShaderResourceView* texture )
+void RefractionShader::setShaderParameters( D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D10ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor, D3DXVECTOR4 clipPlane )
 {
 	// Set the world matrix variable inside the shader.
 	worldMatrixPtr_->SetMatrix((float*)&worldMatrix);
@@ -259,23 +244,26 @@ void TerrainShader::setShaderParameters( D3DXMATRIX worldMatrix, D3DXMATRIX view
 	projectionMatrixPtr_->SetMatrix((float*)&projectionMatrix);
 
 	// Bind the texture
-	texturePtr_->SetResource(texture);
+	texturePrt_->SetResource(texture);
 
-	// Light	
+	// Light
+	lightDirectionPtr_->SetFloatVector((float *) &lightDirection);
 	ambientColorPtr_->SetFloatVector((float *) &ambientColor);
 	diffuseColorPtr_->SetFloatVector((float *) &diffuseColor);
-	lightDirectionPtr_->SetFloatVector((float *) &lightDirection);		
+
+	// Clip plane
+	clipPlanePtr_->SetFloatVector((float*)&clipPlane);
 }
 
 /*
 ================
- TerrainShader::renderShader
+ RefractionShader::renderShader
 ================
 */
-void TerrainShader::renderShader( ID3D10Device* device, int indexCount )
-{	
+void RefractionShader::renderShader( ID3D10Device* device, int indexCount )
+{
 	D3D10_TECHNIQUE_DESC techniqueDesc;
-
+		
 	// Set the input layout.
 	device->IASetInputLayout(layout_);
 

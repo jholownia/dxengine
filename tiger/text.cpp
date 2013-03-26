@@ -451,5 +451,5 @@ bool Text::setPolyCount( int count )
 	strcpy_s(polyString, "Polygons: ");
 	strcat_s(polyString, tempString);
 
-	return updateSentence(sentence3_, polyString, 15, 45, 0.0f, 1.0f, 0.0f);
+	return updateSentence(sentence3_, polyString, 15, 45, 1.0f, 1.0f, 0.5f);
 }

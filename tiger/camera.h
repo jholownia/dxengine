@@ -19,7 +19,7 @@
  
  Camera
 
- A simple camera class. Holds a view matrix.
+ A simple camera class. Holds a view matrix and reflection view matrix.
  
 ================================
 */
@@ -32,7 +32,11 @@ public:
 	void render();
 	void getViewMatrix(D3DXMATRIX& viewMatrix);
 
+	void renderReflection(float);
+	D3DXMATRIX getReflectionViewMatrix();
+
 protected:	
 	D3DXMATRIX viewMatrix_;
+	D3DXMATRIX reflectionViewMatrix_;
 };
 
