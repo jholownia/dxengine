@@ -42,9 +42,6 @@
     <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lighting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="objloader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,6 +96,36 @@
     <ClCompile Include="physicsstate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="transparentshader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="reflectionshader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rendertexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debugwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="watershader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="refractionshader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shadowshader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="depthshader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rainshader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h">
@@ -123,9 +150,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lighting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
@@ -200,6 +224,36 @@
     <ClInclude Include="physicsstate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="transparentshader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="reflectionshader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rendertexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debugwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="watershader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="refractionshader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shadowShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="depthshader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rainshader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="light.fx">
@@ -214,6 +268,27 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="terrain.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="transparent.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="reflection.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="refraction.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="water.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shadow.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="depth.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="rain.fx">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

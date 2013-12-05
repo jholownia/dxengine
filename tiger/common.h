@@ -33,3 +33,5 @@ private:
     Uncopyable(const Uncopyable&);
     const Uncopyable& operator=(const Uncopyable&);
 };
+
+// test

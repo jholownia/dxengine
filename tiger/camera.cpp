@@ -131,6 +131,17 @@ void Camera::renderReflection(float height)
 	lookAt.y = position.y;
 	lookAt.z = cosf(radians) + z_;
 
+
+	// --
+
+
+
+
+
+
+
+	// --
+
 	// Create reflection matrix
 	D3DXMatrixLookAtLH(&reflectionViewMatrix_, &position, &lookAt, &up);	
 }

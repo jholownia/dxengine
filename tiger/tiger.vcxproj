@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -20,12 +20,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -39,9 +41,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(DXSDK_DIR)Include;$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(DXSDK_DIR)Lib\x86;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);%(DXSDK_DIR)Include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(DXSDK_DIR)Lib\x86</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -77,16 +83,22 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="cpumonitor.cpp" />
+    <ClCompile Include="debugwindow.cpp" />
+    <ClCompile Include="depthshader.cpp" />
     <ClCompile Include="fontshader.cpp" />
     <ClCompile Include="fpscounter.cpp" />
     <ClCompile Include="frustum.cpp" />
-    <ClCompile Include="lighting.cpp" />
+    <ClCompile Include="light.cpp" />
     <ClCompile Include="moveable.cpp" />
     <ClCompile Include="objectlist.cpp" />
     <ClCompile Include="objloader.cpp" />
     <ClCompile Include="physicsstate.cpp" />
     <ClCompile Include="position.cpp" />
     <ClCompile Include="quadtree.cpp" />
+    <ClCompile Include="rainshader.cpp" />
+    <ClCompile Include="reflectionshader.cpp" />
+    <ClCompile Include="refractionshader.cpp" />
+    <ClCompile Include="rendertexture.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="d3dmanager.cpp" />
     <ClCompile Include="scenemanager.cpp" />
@@ -95,12 +107,15 @@
     <ClCompile Include="object3d.cpp" />
     <ClCompile Include="font.cpp" />
     <ClCompile Include="shadermanager.cpp" />
+    <ClCompile Include="shadowshader.cpp" />
     <ClCompile Include="soundmanager.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="terrainshader.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="timer.cpp" />
+    <ClCompile Include="transparentshader.cpp" />
+    <ClCompile Include="watershader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
@@ -108,10 +123,12 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="cpumonitor.h" />
+    <ClInclude Include="debugwindow.h" />
+    <ClInclude Include="depthshader.h" />
     <ClInclude Include="fontshader.h" />
     <ClInclude Include="fpscounter.h" />
     <ClInclude Include="frustum.h" />
-    <ClInclude Include="lighting.h" />
+    <ClInclude Include="light.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="moveable.h" />
     <ClInclude Include="objectlist.h" />
@@ -120,6 +137,10 @@
     <ClInclude Include="position.h" />
     <ClInclude Include="quadtree.h" />
     <ClInclude Include="quadtreenode.h" />
+    <ClInclude Include="rainshader.h" />
+    <ClInclude Include="reflectionshader.h" />
+    <ClInclude Include="refractionshader.h" />
+    <ClInclude Include="rendertexture.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="d3dmanager.h" />
     <ClInclude Include="scenemanager.h" />
@@ -127,23 +148,33 @@
     <ClInclude Include="object3d.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="shadermanager.h" />
+    <ClInclude Include="shadowShader.h" />
     <ClInclude Include="soundmanager.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="terrainshader.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="timer.h" />
+    <ClInclude Include="transparentshader.h" />
     <ClInclude Include="vector3d.h" />
     <ClInclude Include="vertex.h" />
+    <ClInclude Include="watershader.h" />
     <ClInclude Include="waveheader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
     <None Include="cube.txt" />
+    <None Include="depth.fx" />
     <None Include="font.fx" />
     <None Include="light.fx" />
+    <None Include="rain.fx" />
+    <None Include="reflection.fx" />
+    <None Include="refraction.fx" />
+    <None Include="shadow.fx" />
     <None Include="terrain.fx" />
+    <None Include="transparent.fx" />
+    <None Include="water.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
