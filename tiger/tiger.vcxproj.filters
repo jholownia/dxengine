@@ -123,9 +123,6 @@
     <ClCompile Include="depthshader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rainshader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h">
@@ -249,9 +246,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="depthshader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rainshader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

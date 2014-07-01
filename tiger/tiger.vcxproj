@@ -20,7 +20,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(DXSDK_DIR)Include;$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(DXSDK_DIR)Lib\x86;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VC_IncludePath);$(DXSDK_DIR)Include;$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(VC_LibraryPath_x86);$(DXSDK_DIR)Lib\x86;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -95,7 +95,6 @@
     <ClCompile Include="physicsstate.cpp" />
     <ClCompile Include="position.cpp" />
     <ClCompile Include="quadtree.cpp" />
-    <ClCompile Include="rainshader.cpp" />
     <ClCompile Include="reflectionshader.cpp" />
     <ClCompile Include="refractionshader.cpp" />
     <ClCompile Include="rendertexture.cpp" />
@@ -137,7 +136,6 @@
     <ClInclude Include="position.h" />
     <ClInclude Include="quadtree.h" />
     <ClInclude Include="quadtreenode.h" />
-    <ClInclude Include="rainshader.h" />
     <ClInclude Include="reflectionshader.h" />
     <ClInclude Include="refractionshader.h" />
     <ClInclude Include="rendertexture.h" />
